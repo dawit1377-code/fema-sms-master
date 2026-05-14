@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Directory | FEMA SMS</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Teacher Directory Hub | FEMA SMS</title>
+    <link href="[https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css](https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css)" rel="stylesheet">
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css)">
     <style>
-        body { background: #f0f2f5; }
-        .sidebar { height: 100vh; width: 250px; position: fixed; background: #004aad; color: white; padding-top: 20px; }
+        body { background: #f0f2f5; font-family: 'Segoe UI', system-ui, sans-serif; }
+        .sidebar { height: 100vh; width: 250px; position: fixed; background: #004aad; color: white; padding-top: 20px; z-index: 1000; }
         .main-content { margin-left: 250px; padding: 30px; }
-        .sidebar a { color: white; text-decoration: none; display: block; padding: 15px 25px; transition: 0.3s; }
-        .sidebar a:hover { background: rgba(255,255,255,0.1); }
-        .teacher-table { background: white; border-radius: 15px; overflow: hidden; }
-        .table-avatar { width: 35px; height: 35px; object-fit: cover; border-radius: 50%; margin-right: 10px; }
+        .sidebar a { color: rgba(255,255,255,0.85); text-decoration: none; display: block; padding: 15px 25px; transition: 0.2s; border-radius: 8px; margin: 0 10px; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(255,255,255,0.1); color: white; }
+        .sidebar a.active { background: white; color: #004aad; font-weight: bold; }
+        
+        .directory-card { background: white; border-radius: 16px; border: none; overflow: hidden; }
+        .table-avatar { width: 38px; height: 38px; object-fit: cover; border-radius: 50%; border: 2px solid #e0e0e0; margin-right: 12px; }
+        .teach-profile-img { width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 3px solid #004aad; }
     </style>
 </head>
 <body>
@@ -22,32 +25,33 @@
         <h4 class="text-center fw-bold mb-4">FEMA SMS</h4>
         <a href="dashboard.html"><i class="fas fa-home me-2"></i> Dashboard</a>
         <a href="students.html"><i class="fas fa-user-graduate me-2"></i> Students</a>
-        <a href="teachers.html" class="bg-white text-primary fw-bold"><i class="fas fa-chalkboard-teacher me-2"></i> Teachers</a>
+        <a href="teachers.html" class="active"><i class="fas fa-chalkboard-teacher me-2"></i> Teachers</a>
         <a href="attendance.html"><i class="fas fa-chart-line me-2"></i> Attendance</a>
         <a href="finance.html"><i class="fas fa-wallet me-2"></i> Finance</a>
         <a href="settings.html"><i class="fas fa-cog me-2"></i> Settings</a>
-        <hr>
+        <hr class="mx-3 opacity-25">
         <a href="login.html" class="text-warning"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
     </div>
 
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold">Teacher Directory</h2>
+            <h2 class="fw-bold">Faculty Staff Directory Hub</h2>
             <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#teacherModal">
-                <i class="fas fa-user-plus me-2"></i> Add New Teacher
+                <i class="fas fa-user-plus me-2"></i> Register New Staff
             </button>
         </div>
 
-        <div class="card teacher-table shadow-sm border-0">
-            <table class="table table-hover mb-0 align-middle">
+        <div class="card directory-card shadow-sm border-0">
+            <table class="table table-hover mb-0 valign-middle">
                 <thead class="table-light">
                     <tr>
+                        <th>Roster / System ID</th>
                         <th>Instructor Details</th>
-                        <th>Subject Department</th>
+                        <th>Subject Departments</th>
                         <th>Assigned Roster Streams</th>
                         <th>Mobile Number</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="teacherTableBody">
@@ -58,50 +62,63 @@
 
     <div class="modal fade" id="teacherModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-content p-4">
-            <div class="modal-header">
-                <h5 class="modal-title fw-bold">Register Faculty Profile</h5>
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold text-success"><i class="fas fa-plus me-2"></i>Open New Staff File</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form id="teacherForm">
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Profile Photo File</label>
-                        <input type="file" id="teachPhoto" class="form-control" accept="image/*">
+                        <input type="file" id="teachPhoto" class="form-control" accept="image/*" required>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-7">
+                            <label class="form-label fw-semibold">Full Name</label>
+                            <input type="text" id="teachName" class="form-control" required placeholder="Genet Assefa">
+                        </div>
+                        <div class="col-5">
+                            <label class="form-label fw-semibold">Staff System ID</label>
+                            <input type="text" id="teachSystemId" class="form-control" required placeholder="TCH004">
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Full Name</label>
-                        <input type="text" id="teachName" class="form-control" required placeholder="e.g. Genet Assefa">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Subject Department</label>
+                        <label class="form-label fw-semibold">Subject Departments</label>
                         <input type="text" id="teachSubject" class="form-control" required placeholder="e.g. History / Chemistry">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Assigned Grade Streams</label>
+                        <label class="form-label fw-semibold">Roster Assignment Streams</label>
                         <input type="text" id="teachClasses" class="form-control" required placeholder="e.g. Grade 10-A, Grade 12-C">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Contact Mobile Phone</label>
-                        <input type="text" id="teachPhone" class="form-control" required placeholder="e.g. +251 912...">
+                        <label class="form-label fw-semibold">Mobile Phone</label>
+                        <input type="text" id="teachPhone" class="form-control" required placeholder="+251 912...">
                     </div>
-                    <button type="submit" class="btn btn-primary w-100 fw-bold">Save Teacher Account</button>
+                    <button type="submit" class="btn btn-success w-100 fw-bold">Commit Instructor Profile File</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="modal fade" id="deepTeachModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-content p-4">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold text-secondary">Staff Member Information File</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="deepTeachModalBody">
+                </div>
+        </div>
+    </div>
+
+    <script src="[https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js](https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js)"></script>
     <script>
         // Critical Authentication Route Guard Layer
-        if (localStorage.getItem('fema_auth_session') !== 'authenticated_true_token') {
-            window.location.href = "login.html";
-        }
-
-        const fallbackTeacherAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23004aad'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z'/></svg>";
+        if (localStorage.getItem('fema_auth_session') !== 'authenticated_true_token') { window.location.href = "login.html"; }
 
         const defaultTeachers = [
-            { name: "Mulugeta Tesfaye", subject: "Mathematics", classes: "Grade 10-A, 11-B", phone: "+251 912 345 678", status: "Active", photo: fallbackTeacherAvatar },
-            { name: "Genet Assefa", subject: "Physics", classes: "Grade 12-C", phone: "+251 922 987 654", status: "Active", photo: fallbackTeacherAvatar }
+            { id: "TCH001", name: "Mulugeta Tesfaye", subject: "Mathematics", classes: "Grade 10, 11", phone: "+251 912 345 678", status: "Active", photo: "data:image/svg+xml;utf8,<svg xmlns='[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)' viewBox='0 0 24 24' fill='%23004aad'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z'/></svg>" },
+            { id: "TCH002", name: "Genet Assefa", subject: "Physics", classes: "Grade 12", phone: "+251 922 987 654", status: "Active", photo: "data:image/svg+xml;utf8,<svg xmlns='[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)' viewBox='0 0 24 24' fill='%23004aad'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z'/></svg>" }
         ];
 
         let teachers = JSON.parse(localStorage.getItem('fema_teachers')) || defaultTeachers;
@@ -109,18 +126,16 @@
         function renderTeachers() {
             const tbody = document.getElementById('teacherTableBody');
             tbody.innerHTML = '';
-            teachers.forEach((teacher, idx) => {
+            teachers.forEach((t, idx) => {
                 tbody.innerHTML += `
                     <tr>
-                        <td>
-                            <img src="${teacher.photo || fallbackTeacherAvatar}" class="table-avatar shadow-sm">
-                            <strong>${teacher.name}</strong>
-                        </td>
-                        <td><span class="badge bg-light text-dark border">${teacher.subject}</span></td>
-                        <td>${teacher.classes}</td>
-                        <td><code>${teacher.phone}</code></td>
-                        <td><span class="badge bg-success">${teacher.status}</span></td>
-                        <td><button class="btn btn-sm btn-outline-danger border-0" onclick="deleteTeacher(${idx})"><i class="fas fa-trash"></i></button></td>
+                        <td><code>${t.id}</code></td>
+                        <td><img src="${t.photo}" class="table-avatar shadow-sm"><a href="#" class="fw-bold text-decoration-none" onclick="viewDeepTeach(${idx})">${t.name}</a></td>
+                        <td><span class="badge bg-light text-dark border">${t.subject}</span></td>
+                        <td>${t.classes}</td>
+                        <td><code>${t.phone}</code></td>
+                        <td><span class="badge bg-success">${t.status}</span></td>
+                        <td><button class="btn btn-sm btn-outline-danger border-0" onclick="deleteTeachRecord(${idx})"><i class="fas fa-trash"></i></button></td>
                     </tr>
                 `;
             });
@@ -129,21 +144,17 @@
 
         document.getElementById('teacherForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const photoFile = document.getElementById('teachPhoto').files[0];
-
-            if(photoFile) {
-                const reader = new FileReader();
-                reader.onloadend = function() {
-                    saveTeacherProfile(reader.result);
-                }
-                reader.readAsDataURL(photoFile);
-            } else {
-                saveTeacherProfile(fallbackTeacherAvatar);
+            const teachPhotoFile = document.getElementById('teachPhoto').files[0];
+            const reader = new FileReader();
+            reader.readAsDataURL(teachPhotoFile);
+            reader.onload = function(event) {
+                commitTeachProfile(event.result);
             }
         });
 
-        function saveTeacherProfile(photoBase64) {
-            const newTeach = {
+        function commitTeachProfile(photoBase64) {
+            const newFile = {
+                id: document.getElementById('teachSystemId').value,
                 name: document.getElementById('teachName').value,
                 subject: document.getElementById('teachSubject').value,
                 classes: document.getElementById('teachClasses').value,
@@ -151,21 +162,39 @@
                 status: "Active",
                 photo: photoBase64
             };
-            teachers.push(newTeach);
+            teachers.push(newFile);
             renderTeachers();
-            
             bootstrap.Modal.getInstance(document.getElementById('teacherModal')).hide();
             document.getElementById('teacherForm').reset();
         }
 
-        function deleteTeacher(index) {
-            if(confirm("Are you sure you want to completely remove this instructor profile account file?")) {
-                teachers.splice(index, 1);
-                renderTeachers();
-            }
+        function viewDeepTeach(idx) {
+            const t = teachers[idx];
+            const modalBody = document.getElementById('deepTeachModalBody');
+            modalBody.innerHTML = `
+                <div class="row align-items-center mb-4 bg-light p-3 rounded-4 shadow-sm border">
+                    <div class="col-md-3 text-center"><img src="${t.photo}" class="teach-profile-img shadow"></div>
+                    <div class="col-md-9 row">
+                        <div class="col-md-10">
+                            <h3 class="fw-bold text-dark mb-1">${t.name}</h3>
+                            <p class="text-secondary fw-semibold mb-2">FEMA SMS Staff ID: <code>${t.id}</code> | Contact: ${t.phone}</p>
+                            <span class="badge bg-secondary fw-bold px-3 py-2">${t.subject} Department</span>
+                        </div>
+                        <div class="col-md-2 d-flex gap-2 justify-content-end"><button class="btn btn-success rounded-circle"><i class="fas fa-envelope"></i></button><button class="btn btn-primary rounded-circle"><i class="fas fa-phone"></i></button></div>
+                    </div>
+                </div>
+                <div class="card p-3 border-0 bg-white rounded-4 shadow-sm mb-3">
+                    <h6 class="fw-bold text-success mb-3"><i class="fas fa-check-circle me-2"></i>Active Academic Roster Assignments (2026 E.C.)</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="p-2 border-bottom"><strong>${t.classes}</strong>: Stream Homeroom, Course Instructor, and Reporting</li>
+                        <li class="p-2">Substitute Assignment: Grade 11-A (Mathematics Stream B) - Covering Ms. Genet</li>
+                    </ul>
+                </div>
+            `;
+            new bootstrap.Modal(document.getElementById('deepTeachModal')).show();
         }
 
-        document.addEventListener("DOMContentLoaded", renderTeachers);
+        renderTeachers();
     </script>
 </body>
 </html>
