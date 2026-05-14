@@ -3,40 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Fema SMS Admin</title>
+    <title>Login | FEMA SMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: #f4f7f6; height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .login-card { width: 100%; max-width: 400px; padding: 30px; border-radius: 15px; border: none; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .btn-primary { background: #004aad; border: none; padding: 12px; }
+        body { 
+            background: #f0f2f5; 
+            height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .login-card { 
+            background: white; 
+            border-radius: 20px; 
+            border: none; 
+            width: 100%; 
+            max-width: 450px; 
+        }
     </style>
 </head>
 <body>
 
-    <div class="card login-card bg-white">
+    <div class="card login-card shadow p-5">
         <div class="text-center mb-4">
-            <h3 class="fw-bold text-primary">FEMA SMS</h3>
-            <p class="text-muted">School Administration Portal</p>
+            <h2 class="fw-bold text-primary mb-1">FEMA SMS</h2>
+            <p class="text-muted fw-semibold">School Administration Portal</p>
         </div>
-       <form action="dashboard.html">
+
+        <div id="loginAlert" class="alert alert-danger d-none" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i> Invalid administrative credentials!
+        </div>
+
+        <form id="loginForm">
             <div class="mb-3">
-                <label class="form-label">School Email</label>
-                <input type="email" class="form-control" placeholder="admin@schoolname.com">
+                <label class="form-label fw-bold text-secondary">School Email</label>
+                <input type="email" id="loginEmail" class="form-control p-2" required placeholder="admin@schoolname.com" value="admin@schoolname.com">
             </div>
-            <div class="mb-3">
-                <label class="form-label">Password</label>
-                <input type="password" class="form-control" placeholder="••••••••">
+            <div class="mb-4">
+                <label class="form-label fw-bold text-secondary">Password</label>
+                <input type="password" id="loginPassword" class="form-control p-2" required placeholder="••••••••" value="password123">
             </div>
-            <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="remember">
-                <label class="form-check-label" for="remember">Remember me</label>
+            <div class="mb-4 d-flex justify-content-between">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                    <label class="form-check-label text-muted" for="rememberMe">Remember me</label>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary w-100 fw-bold">Login to Dashboard</button>
+            <button type="submit" class="btn btn-primary w-100 fw-bold p-2 shadow-sm">Login to Dashboard</button>
         </form>
+        
         <div class="text-center mt-4">
-            <a href="index.html" class="text-decoration-none small text-muted">← Back to Home</a>
+            <a href="#" class="text-decoration-none text-muted small"><i class="fas fa-arrow-left me-1"></i> Back to Home</a>
         </div>
     </div>
 
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPassword').value;
+            const alertBox = document.getElementById('loginAlert');
+
+            // Hardcoded prototype credential verification rules
+            if (email === "admin@schoolname.com" && pass === "password123") {
+                alertBox.classList.add('d-none');
+                
+                // Write session token key to memory
+                localStorage.setItem('fema_auth_session', 'authenticated_true_token');
+                
+                // Redirect straight to overview hub
+                window.location.href = "dashboard.html";
+            } else {
+                alertBox.classList.remove('d-none');
+            }
+        });
+    </script>
 </body>
 </html>
