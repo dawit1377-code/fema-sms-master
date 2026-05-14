@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Management | FEMA SMS</title>
+    <title>Teacher Directory | FEMA SMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -12,7 +12,8 @@
         .main-content { margin-left: 250px; padding: 30px; }
         .sidebar a { color: white; text-decoration: none; display: block; padding: 15px 25px; transition: 0.3s; }
         .sidebar a:hover { background: rgba(255,255,255,0.1); }
-        .teacher-card { background: white; border-radius: 15px; border: none; overflow: hidden; }
+        .teacher-table { background: white; border-radius: 15px; overflow: hidden; }
+        .table-avatar { width: 35px; height: 35px; object-fit: cover; border-radius: 50%; margin-right: 10px; }
     </style>
 </head>
 <body>
@@ -37,14 +38,14 @@
             </button>
         </div>
 
-        <div class="card teacher-card shadow-sm">
-            <table class="table table-hover mb-0">
+        <div class="card teacher-table shadow-sm border-0">
+            <table class="table table-hover mb-0 align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th>Name</th>
+                        <th>Instructor Details</th>
                         <th>Subject Department</th>
-                        <th>Assigned Classes</th>
-                        <th>Contact Number</th>
+                        <th>Assigned Roster Streams</th>
+                        <th>Mobile Number</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -58,28 +59,32 @@
     <div class="modal fade" id="teacherModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-content p-4">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold">Register Instructor</h5>
+                <h5 class="modal-title fw-bold">Register Faculty Profile</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form id="teacherForm">
                     <div class="mb-3">
-                        <label class="form-label">Full Name</label>
-                        <input type="text" id="teachName" class="form-control" required placeholder="e.g. Mulugeta Tesfaye">
+                        <label class="form-label fw-semibold">Profile Photo File</label>
+                        <input type="file" id="teachPhoto" class="form-control" accept="image/*">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Subject Department</label>
-                        <input type="text" id="teachSubject" class="form-control" required placeholder="e.g. Physics / Amharic">
+                        <label class="form-label fw-semibold">Full Name</label>
+                        <input type="text" id="teachName" class="form-control" required placeholder="e.g. Genet Assefa">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Assigned Classes</label>
-                        <input type="text" id="teachClasses" class="form-control" required placeholder="e.g. Grade 10-A, 11-B">
+                        <label class="form-label fw-semibold">Subject Department</label>
+                        <input type="text" id="teachSubject" class="form-control" required placeholder="e.g. History / Chemistry">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Contact Phone</label>
-                        <input type="text" id="teachPhone" class="form-control" required placeholder="e.g. +251 911...">
+                        <label class="form-label fw-semibold">Assigned Grade Streams</label>
+                        <input type="text" id="teachClasses" class="form-control" required placeholder="e.g. Grade 10-A, Grade 12-C">
                     </div>
-                    <button type="submit" class="btn btn-primary w-100 fw-bold">Save Instructor Profile</button>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Contact Mobile Phone</label>
+                        <input type="text" id="teachPhone" class="form-control" required placeholder="e.g. +251 912...">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">Save Teacher Account</button>
                 </form>
             </div>
         </div>
@@ -87,14 +92,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // --- CRITICAL AUTHENTICATION ROUTE GUARD LAYER ---
-if (localStorage.getItem('fema_auth_session') !== 'authenticated_true_token') {
-    // Drop execution immediately and kick user back out to security checkpoint
-    window.location.href = "login.html";
-}
+        // Critical Authentication Route Guard Layer
+        if (localStorage.getItem('fema_auth_session') !== 'authenticated_true_token') {
+            window.location.href = "login.html";
+        }
+
+        const fallbackTeacherAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23004aad'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z'/></svg>";
+
         const defaultTeachers = [
-            { name: "Mulugeta Tesfaye", subject: "Mathematics", classes: "Grade 10, 11", phone: "+251 912 345 678", status: "Active" },
-            { name: "Genet Assefa", subject: "Physics", classes: "Grade 12", phone: "+251 922 987 654", status: "Active" }
+            { name: "Mulugeta Tesfaye", subject: "Mathematics", classes: "Grade 10-A, 11-B", phone: "+251 912 345 678", status: "Active", photo: fallbackTeacherAvatar },
+            { name: "Genet Assefa", subject: "Physics", classes: "Grade 12-C", phone: "+251 922 987 654", status: "Active", photo: fallbackTeacherAvatar }
         ];
 
         let teachers = JSON.parse(localStorage.getItem('fema_teachers')) || defaultTeachers;
@@ -105,12 +112,15 @@ if (localStorage.getItem('fema_auth_session') !== 'authenticated_true_token') {
             teachers.forEach((teacher, idx) => {
                 tbody.innerHTML += `
                     <tr>
-                        <td><strong>${teacher.name}</strong></td>
-                        <td>${teacher.subject}</td>
+                        <td>
+                            <img src="${teacher.photo || fallbackTeacherAvatar}" class="table-avatar shadow-sm">
+                            <strong>${teacher.name}</strong>
+                        </td>
+                        <td><span class="badge bg-light text-dark border">${teacher.subject}</span></td>
                         <td>${teacher.classes}</td>
-                        <td>${teacher.phone}</td>
+                        <td><code>${teacher.phone}</code></td>
                         <td><span class="badge bg-success">${teacher.status}</span></td>
-                        <td><button class="btn btn-sm text-danger border-0" onclick="deleteTeacher(${idx})"><i class="fas fa-trash"></i></button></td>
+                        <td><button class="btn btn-sm btn-outline-danger border-0" onclick="deleteTeacher(${idx})"><i class="fas fa-trash"></i></button></td>
                     </tr>
                 `;
             });
@@ -119,22 +129,37 @@ if (localStorage.getItem('fema_auth_session') !== 'authenticated_true_token') {
 
         document.getElementById('teacherForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            const photoFile = document.getElementById('teachPhoto').files[0];
+
+            if(photoFile) {
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    saveTeacherProfile(reader.result);
+                }
+                reader.readAsDataURL(photoFile);
+            } else {
+                saveTeacherProfile(fallbackTeacherAvatar);
+            }
+        });
+
+        function saveTeacherProfile(photoBase64) {
             const newTeach = {
                 name: document.getElementById('teachName').value,
                 subject: document.getElementById('teachSubject').value,
                 classes: document.getElementById('teachClasses').value,
                 phone: document.getElementById('teachPhone').value,
-                status: "Active"
+                status: "Active",
+                photo: photoBase64
             };
             teachers.push(newTeach);
             renderTeachers();
             
             bootstrap.Modal.getInstance(document.getElementById('teacherModal')).hide();
             document.getElementById('teacherForm').reset();
-        });
+        }
 
         function deleteTeacher(index) {
-            if(confirm("Permanently drop this instructor record from active roster?")) {
+            if(confirm("Are you sure you want to completely remove this instructor profile account file?")) {
                 teachers.splice(index, 1);
                 renderTeachers();
             }
