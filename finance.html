@@ -17,40 +17,41 @@
 </head>
 <body>
 
-    <!-- Sidebar -->
-   <div class="sidebar shadow">
-    <h4 class="text-center fw-bold mb-4">FEMA SMS</h4>
-    <a href="dashboard.html"><i class="fas fa-home me-2"></i> Dashboard</a>
-    <a href="students.html"><i class="fas fa-user-graduate me-2"></i> Students</a>
-    <a href="teachers.html"><i class="fas fa-chalkboard-teacher me-2"></i> Teachers</a>
-    <a href="attendance.html"><i class="fas fa-chart-line me-2"></i> Attendance</a>
-    <a href="finance.html"><i class="fas fa-wallet me-2"></i> Finance</a>
-    <a href="settings.html"><i class="fas fa-cog me-2"></i> Settings</a>
-    <hr>
-    <a href="login.html" class="text-warning"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
-</div>
+    <div class="sidebar shadow">
+        <h4 class="text-center fw-bold mb-4">FEMA SMS</h4>
+        <a href="dashboard.html"><i class="fas fa-home me-2"></i> Dashboard</a>
+        <a href="students.html"><i class="fas fa-user-graduate me-2"></i> Students</a>
+        <a href="teachers.html"><i class="fas fa-chalkboard-teacher me-2"></i> Teachers</a>
+        <a href="attendance.html"><i class="fas fa-chart-line me-2"></i> Attendance</a>
+        <a href="finance.html" class="bg-white text-primary fw-bold"><i class="fas fa-wallet me-2"></i> Finance</a>
+        <a href="settings.html"><i class="fas fa-cog me-2"></i> Settings</a>
+        <hr>
+        <a href="login.html" class="text-warning"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
+    </div>
 
-    <!-- Main Content -->
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold">Financial Overview</h2>
             <div>
-                <button class="btn btn-outline-primary me-2"><i class="fas fa-download me-2"></i> Export Report</button>
-                <button class="btn btn-success"><i class="fas fa-plus me-2"></i> Record Manual Payment</button>
+                <button class="btn btn-outline-primary me-2" onclick="alert('Exporting system CSV statement report...')">
+                    <i class="fas fa-download me-2"></i> Export Report
+                </button>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#paymentModal">
+                    <i class="fas fa-plus me-2"></i> Record Manual Payment
+                </button>
             </div>
         </div>
 
-        <!-- Revenue Stats -->
         <div class="row g-4 mb-4">
             <div class="col-md-4">
                 <div class="card finance-card bg-primary text-white p-4 shadow">
                     <small class="text-uppercase fw-bold opacity-75">Total Collected (Term 1)</small>
-                    <h2 class="fw-bold mt-2">1,250,000 ETB</h2>
+                    <h2 class="fw-bold mt-2" id="statTotalCollected">1,250,000 ETB</h2>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card finance-card bg-white p-4 shadow-sm border-start border-warning border-5">
-                    <small class="text-muted text-uppercase fw-bold">Pending via Telebirr</small>
+                    <small class="text-muted text-uppercase fw-bold">Pending Approval</small>
                     <h2 class="fw-bold mt-2 text-dark">45,800 ETB</h2>
                 </div>
             </div>
@@ -62,50 +63,146 @@
             </div>
         </div>
 
-        <!-- Detailed Transaction Table -->
         <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
             <div class="p-3 bg-white border-bottom d-flex justify-content-between align-items-center">
                 <h5 class="fw-bold mb-0">Transaction History</h5>
-                <select class="form-select w-25">
-                    <option>All Methods</option>
-                    <option>Telebirr</option>
-                    <option>Chapa</option>
-                    <option>CBE Birr</option>
-                    <option>Bank Transfer</option>
+                <select class="form-select w-25" id="methodFilter" onchange="filterTransactions()">
+                    <option value="All">All Methods</option>
+                    <option value="Telebirr">Telebirr</option>
+                    <option value="Chapa">Chapa</option>
                 </select>
             </div>
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
                         <th>Date</th>
-                        <th>Student</th>
+                        <th>Student Name</th>
                         <th>Method</th>
                         <th>Reference</th>
                         <th>Amount</th>
                         <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>2026-05-14</td>
-                        <td>Abebe Kebede</td>
-                        <td><span class="badge bg-info text-dark">Telebirr</span></td>
-                        <td><code>FT2525746PN1</code></td>
-                        <td class="fw-bold">4,500 ETB</td>
-                        <td><span class="badge bg-success">Verified</span></td>
-                    </tr>
-                    <tr>
-                        <td>2026-05-13</td>
-                        <td>Saba Hailu</td>
-                        <td><span class="badge bg-primary">Chapa</span></td>
-                        <td><code>CH-TX-99812</code></td>
-                        <td class="fw-bold">4,500 ETB</td>
-                        <td><span class="badge bg-success">Verified</span></td>
-                    </tr>
-                </tbody>
+                <tbody id="financeTableBody">
+                    </tbody>
             </table>
         </div>
     </div>
 
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-content p-4">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold text-success">Log New Transaction</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="paymentForm">
+                    <div class="mb-3">
+                        <label class="form-label">Student Full Name</label>
+                        <input type="text" id="payStudentName" class="form-control" required placeholder="e.g. Dawit Yohannes">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Payment Platform Provider</label>
+                        <select id="payMethod" class="form-select">
+                            <option value="Telebirr">Telebirr Integration</option>
+                            <option value="Chapa">Chapa Gateway</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Fee Amount (ETB)</label>
+                        <input type="number" id="payAmount" class="form-control" required placeholder="e.g. 4500">
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 fw-bold">Verify and Post Payment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Default Seed Data
+        const defaultPayments = [
+            { date: "2026-05-14", student: "Abebe Kebede", method: "Telebirr", ref: "FT2525746PN1", amount: 4500, status: "Verified" },
+            { date: "2026-05-13", student: "Saba Hailu", method: "Chapa", ref: "CH-TX-99812", amount: 4500, status: "Verified" }
+        ];
+
+        // Fetch LocalStorage Records
+        let payments = JSON.parse(localStorage.getItem('fema_payments')) || defaultPayments;
+
+        function updateCollectedStats() {
+            let runningSum = payments.reduce((acc, current) => acc + parseFloat(current.amount), 1241000);
+            document.getElementById('statTotalCollected').innerText = runningSum.toLocaleString() + " ETB";
+        }
+
+        function renderFinanceTable(dataToDisplay = payments) {
+            const tbody = document.getElementById('financeTableBody');
+            tbody.innerHTML = '';
+            
+            dataToDisplay.forEach((item, idx) => {
+                let methodBadge = item.method === "Telebirr" ? 'bg-info text-dark' : 'bg-primary';
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${item.date}</td>
+                        <td><strong>${item.student}</strong></td>
+                        <td><span class="badge ${methodBadge}">${item.method}</span></td>
+                        <td><code>${item.ref}</code></td>
+                        <td class="fw-bold">${parseFloat(item.amount).toLocaleString()} ETB</td>
+                        <td><span class="badge bg-success">${item.status}</span></td>
+                        <td><button class="btn btn-sm btn-outline-danger border-0" onclick="voidPayment(${idx})"><i class="fas fa-trash"></i></button></td>
+                    </tr>
+                `;
+            });
+            
+            localStorage.setItem('fema_payments', JSON.stringify(payments));
+            updateCollectedStats();
+        }
+
+        // Form interception engine logic execution code
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let today = new Date().toISOString().split('T')[0];
+            let randomRefSuffix = Math.floor(100000 + Math.random() * 900000);
+            let generatedRef = document.getElementById('payMethod').value === "Telebirr" ? `FT2026${randomRefSuffix}` : `CH-TX-${randomRefSuffix}`;
+            
+            const newReceipt = {
+                date: today,
+                student: document.getElementById('payStudentName').value,
+                method: document.getElementById('payMethod').value,
+                ref: generatedRef,
+                amount: parseFloat(document.getElementById('payAmount').value),
+                status: "Verified"
+            };
+            
+            payments.unshift(newReceipt); // Put newest transaction records at the top
+            renderFinanceTable();
+            
+            // Clean interface component interaction actions
+            const currentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
+            currentModal.hide();
+            document.getElementById('paymentForm').reset();
+        });
+
+        function voidPayment(index) {
+            if(confirm("Do you want to reverse and delete this validated receipt entry?")) {
+                payments.splice(index, 1);
+                renderFinanceTable();
+            }
+        }
+
+        function filterTransactions() {
+            let filterValue = document.getElementById('methodFilter').value;
+            if (filterValue === "All") {
+                renderFinanceTable(payments);
+            } else {
+                let filtered = payments.filter(p => p.method === filterValue);
+                renderFinanceTable(filtered);
+            }
+        }
+
+        // Run Engine on Application startup initialization
+        renderFinanceTable();
+    </script>
 </body>
 </html>
