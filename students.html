@@ -13,6 +13,8 @@
         .sidebar a { color: white; text-decoration: none; display: block; padding: 15px 25px; transition: 0.3s; }
         .sidebar a:hover { background: rgba(255,255,255,0.1); }
         .student-table { background: white; border-radius: 15px; overflow: hidden; }
+        .profile-img-circle { width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 3px solid #004aad; }
+        .table-avatar { width: 35px; height: 35px; object-fit: cover; border-radius: 50%; margin-right: 10px; }
     </style>
 </head>
 <body>
@@ -38,18 +40,25 @@
         </div>
 
         <div class="card student-table shadow-sm border-0">
-            <div class="p-3 bg-light border-bottom">
-                <input type="text" id="searchBar" class="form-control w-25" placeholder="Search by Name..." onkeyup="searchStudents()">
+            <div class="p-3 bg-white border-bottom d-flex justify-content-between">
+                <input type="text" id="searchBar" class="form-control w-25" placeholder="Search by name..." onkeyup="searchStudents()">
+                <select id="gradeFilter" class="form-select w-25" onchange="searchStudents()">
+                    <option value="">All Grades</option>
+                    <option value="Grade 9">Grade 9</option>
+                    <option value="Grade 10">Grade 10</option>
+                    <option value="Grade 11">Grade 11</option>
+                    <option value="Grade 12">Grade 12</option>
+                </select>
             </div>
-            <table class="table table-hover mb-0">
+            <table class="table table-hover mb-0 valign-middle">
                 <thead class="table-light">
                     <tr>
                         <th>ID</th>
-                        <th>Name</th>
-                        <th>Grade</th>
-                        <th>Section</th>
+                        <th>Student Name</th>
+                        <th>Grade Stream</th>
+                        <th>Parent / Guardian</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="studentTableBody">
@@ -59,50 +68,78 @@
     </div>
 
     <div class="modal fade" id="studentModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-content modal-dialog p-4">
+        <div class="modal-dialog modal-content p-4">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold">Add Student</h5>
+                <h5 class="modal-title fw-bold">Register Student & Parent</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form id="studentForm">
                     <div class="mb-3">
-                        <label class="form-label">Full Name</label>
-                        <input type="text" id="studName" class="form-control" required placeholder="e.g. Almaz Ayana">
+                        <label class="form-label fw-semibold">Student Photo</label>
+                        <input type="file" id="studPhoto" class="form-control" accept="image/*">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Grade</label>
-                        <select id="studGrade" class="form-select">
-                            <option>Grade 9</option>
-                            <option>Grade 10</option>
-                            <option>Grade 11</option>
-                            <option>Grade 12</option>
-                        </select>
+                        <label class="form-label fw-semibold">Student Full Name</label>
+                        <input type="text" id="studName" class="form-control" required placeholder="e.g. Tariku Abebe">
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Section</label>
-                        <input type="text" id="studSec" class="form-control" required placeholder="e.g. Section A">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label class="form-label fw-semibold">Grade</label>
+                            <select id="studGrade" class="form-select">
+                                <option>Grade 9</option>
+                                <option>Grade 10</option>
+                                <option>Grade 11</option>
+                                <option>Grade 12</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label class="form-label fw-semibold">Section</label>
+                            <input type="text" id="studSec" class="form-control" required placeholder="e.g. A">
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Save Student</button>
+                    <div class="p-3 bg-light rounded-3 mb-3">
+                        <h6 class="fw-bold text-secondary mb-2"><i class="fas fa-user-shield me-2"></i>Parent / Guardian Details</h6>
+                        <div class="mb-2">
+                            <label class="small fw-semibold">Parent Name</label>
+                            <input type="text" id="parentName" class="form-control form-control-sm" required placeholder="e.g. Abebe Kebede">
+                        </div>
+                        <div>
+                            <label class="small fw-semibold">Contact Phone Number</label>
+                            <input type="text" id="parentPhone" class="form-control form-control-sm" required placeholder="e.g. +251 911...">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">Save Complete Profile</button>
                 </form>
             </div>
         </div>
     </div>
 
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-content p-4">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold text-primary">Student Information File</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="profileModalBody">
+                </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // --- CRITICAL AUTHENTICATION ROUTE GUARD LAYER ---
-if (localStorage.getItem('fema_auth_session') !== 'authenticated_true_token') {
-    // Drop execution immediately and kick user back out to security checkpoint
-    window.location.href = "login.html";
-}
-        // Default seed data if browser memory is empty
-        let defaultStudents = [
-            { id: "REG/2026/001", name: "Abebe Kebede", grade: "Grade 10", section: "Section A", status: "Active" },
-            { id: "REG/2026/002", name: "Saba Hailu", grade: "Grade 11", section: "Section B", status: "Active" }
+        // Critical Authentication Route Guard Layer
+        if (localStorage.getItem('fema_auth_session') !== 'authenticated_true_token') {
+            window.location.href = "login.html";
+        }
+
+        const fallbackAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23004aad'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
+
+        const defaultStudents = [
+            { id: "REG/2026/001", name: "Kidus Yohannes", grade: "Grade 10", section: "A", parent: "Yohannes Alemu", phone: "+251 911 445 566", status: "Active", photo: fallbackAvatar },
+            { id: "REG/2026/002", name: "Helen Tadesse", grade: "Grade 12", section: "C", parent: "Tadesse Bekele", phone: "+251 910 223 344", status: "Active", photo: fallbackAvatar }
         ];
 
-        // Load data from LocalStorage or use defaults
         let students = JSON.parse(localStorage.getItem('fema_students')) || defaultStudents;
 
         function renderTable() {
@@ -111,59 +148,119 @@ if (localStorage.getItem('fema_auth_session') !== 'authenticated_true_token') {
             students.forEach((student, index) => {
                 tbody.innerHTML += `
                     <tr>
-                        <td><strong>${student.id}</strong></td>
-                        <td>${student.name}</td>
-                        <td>${student.grade}</td>
-                        <td>${student.section}</td>
+                        <td><code>${student.id}</code></td>
+                        <td>
+                            <img src="${student.photo || fallbackAvatar}" class="table-avatar shadow-sm">
+                            <a href="#" class="fw-bold text-decoration-none" onclick="viewFullProfile(${index})">${student.name}</a>
+                        </td>
+                        <td>${student.grade} - Section ${student.section}</td>
+                        <td><strong>${student.parent}</strong><br><small class="text-muted">${student.phone}</small></td>
                         <td><span class="badge bg-success">${student.status}</span></td>
-                        <td><button class="btn btn-sm btn-outline-danger" onclick="deleteStudent(${index})">Remove</button></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary me-1" onclick="viewFullProfile(${index})"><i class="fas fa-eye"></i> View</button>
+                            <button class="btn btn-sm btn-outline-danger border-0" onclick="deleteStudent(${index})"><i class="fas fa-trash"></i></button>
+                        </td>
                     </tr>
                 `;
             });
-            // Keep localStorage updated
             localStorage.setItem('fema_students', JSON.stringify(students));
         }
 
-        // Add execution logic to form
+        // Process File Input To Base64 Image Async String Data
         document.getElementById('studentForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            const photoFile = document.getElementById('studPhoto').files[0];
+            
+            if (photoFile) {
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    saveStudentData(reader.result);
+                }
+                reader.readAsDataURL(photoFile);
+            } else {
+                saveStudentData(fallbackAvatar);
+            }
+        });
+
+        function saveStudentData(photoBase64) {
             const newStudent = {
-                id: `REG/2026/00${students.length + 1}`,
+                id: `REG/2026/0${students.length + 1}`,
                 name: document.getElementById('studName').value,
                 grade: document.getElementById('studGrade').value,
                 section: document.getElementById('studSec').value,
-                status: "Active"
+                parent: document.getElementById('parentName').value,
+                phone: document.getElementById('parentPhone').value,
+                status: "Active",
+                photo: photoBase64
             };
             students.push(newStudent);
             renderTable();
             
-            // Close popup modal cleanly
-            const modalEl = document.getElementById('studentModal');
-            const modal = bootstrap.Modal.getInstance(modalEl);
-            modal.hide();
+            bootstrap.Modal.getInstance(document.getElementById('studentModal')).hide();
             document.getElementById('studentForm').reset();
-        });
+        }
+
+        function viewFullProfile(idx) {
+            const student = students[idx];
+            const modalBody = document.getElementById('profileModalBody');
+            
+            modalBody.innerHTML = `
+                <div class="row align-items-center mb-4 bg-light p-3 rounded-4">
+                    <div class="col-md-3 text-center">
+                        <img src="${student.photo}" class="profile-img-circle shadow">
+                    </div>
+                    <div class="col-md-9">
+                        <h3 class="fw-bold text-dark mb-1">${student.name}</h3>
+                        <p class="text-primary fw-bold mb-2">ID: ${student.id} | <span class="badge bg-success">${student.status}</span></p>
+                        <div class="row text-secondary">
+                            <div class="col-6"><strong>Current Roster:</strong> ${student.grade} (${student.section})</div>
+                            <div class="col-6"><strong>Parent/Guardian:</strong> ${student.parent}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card p-3 border-0 bg-light rounded-4 h-100">
+                            <h6 class="fw-bold text-primary mb-2"><i class="fas fa-history me-2"></i>Attendance Log History</h6>
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-1"><i class="fas fa-check-circle text-success me-2"></i>Mon, May 11 - Present</li>
+                                <li class="mb-1"><i class="fas fa-check-circle text-success me-2"></i>Tue, May 12 - Present</li>
+                                <li class="mb-1"><i class="fas fa-times-circle text-danger me-2"></i>Wed, May 13 - Absent (SMS Alert Dispatched)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card p-3 border-0 bg-light rounded-4 h-100">
+                            <h6 class="fw-bold text-success mb-2"><i class="fas fa-money-check-alt me-2"></i>Tuition & Finance History</h6>
+                            <p class="mb-1"><strong>Term 1 Fees:</strong> 4,500 ETB <span class="badge bg-success">Paid</span></p>
+                            <p class="mb-0 text-muted small">Reference: <code>FT2525746PN1</code> (Verified via Telebirr)</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            new bootstrap.Modal(document.getElementById('profileModal')).show();
+        }
 
         function deleteStudent(index) {
-            if(confirm("Are you sure you want to remove this student record?")) {
+            if(confirm("Are you sure you want to completely erase this student record file?")) {
                 students.splice(index, 1);
                 renderTable();
             }
         }
 
         function searchStudents() {
-            let filter = document.getElementById('searchBar').value.toLowerCase();
+            let filterName = document.getElementById('searchBar').value.toLowerCase();
+            let filterGrade = document.getElementById('gradeFilter').value;
             let rows = document.getElementById('studentTableBody').getElementsByTagName('tr');
-            for (let row of rows) {
-                let nameCell = row.getElementsByTagName('td')[1];
-                if (nameCell) {
-                    let text = nameCell.textContent || nameCell.innerText;
-                    row.style.display = text.toLowerCase().indexOf(filter) > -1 ? "" : "none";
-                }
-            }
+            
+            students.forEach((student, index) => {
+                let matchName = student.name.toLowerCase().includes(filterName);
+                let matchGrade = filterGrade === "" || student.grade === filterGrade;
+                rows[index].style.display = (matchName && matchGrade) ? "" : "none";
+            });
         }
 
-        // Initialize table rendering on load
         renderTable();
     </script>
 </body>
