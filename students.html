@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Management | FEMA SMS</title>
+    <title>Student Registry | FEMA SMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: #f0f2f5; }
-        .sidebar { height: 100vh; width: 250px; position: fixed; background: #004aad; color: white; padding-top: 20px; }
+        body { background: #f0f2f5; font-family: 'Segoe UI', system-ui, sans-serif; }
+        .sidebar { height: 100vh; width: 250px; position: fixed; background: #004aad; color: white; padding-top: 20px; z-index: 1000; }
         .main-content { margin-left: 250px; padding: 30px; }
-        .sidebar a { color: white; text-decoration: none; display: block; padding: 15px 25px; transition: 0.3s; }
-        .sidebar a:hover { background: rgba(255,255,255,0.1); }
-        .student-table { background: white; border-radius: 15px; overflow: hidden; }
-        .profile-img-circle { width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 3px solid #004aad; }
-        .table-avatar { width: 35px; height: 35px; object-fit: cover; border-radius: 50%; margin-right: 10px; }
+        .sidebar a { color: rgba(255,255,255,0.85); text-decoration: none; display: block; padding: 15px 25px; transition: 0.2s; border-radius: 8px; margin: 0 10px; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(255,255,255,0.1); color: white; }
+        .sidebar a.active { background: white; color: #004aad; font-weight: bold; }
+        
+        .registry-card { background: white; border-radius: 16px; border: none; overflow: hidden; }
+        .table-avatar { width: 38px; height: 38px; object-fit: cover; border-radius: 50%; border: 2px solid #e0e0e0; margin-right: 12px; }
+        .profile-headshot { width: 110px; height: 110px; object-fit: cover; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .profile-img-sm { width: 70px; height: 70px; object-fit: cover; border-radius: 50%; border: 2px solid #e0e0e0; }
+        .modal-xl { max-width: 1100px; }
     </style>
 </head>
 <body>
@@ -22,143 +26,229 @@
     <div class="sidebar shadow">
         <h4 class="text-center fw-bold mb-4">FEMA SMS</h4>
         <a href="dashboard.html"><i class="fas fa-home me-2"></i> Dashboard</a>
-        <a href="students.html" class="bg-white text-primary fw-bold"><i class="fas fa-user-graduate me-2"></i> Students</a>
+        <a href="students.html" class="active"><i class="fas fa-user-graduate me-2"></i> Students</a>
         <a href="teachers.html"><i class="fas fa-chalkboard-teacher me-2"></i> Teachers</a>
         <a href="attendance.html"><i class="fas fa-chart-line me-2"></i> Attendance</a>
         <a href="finance.html"><i class="fas fa-wallet me-2"></i> Finance</a>
         <a href="settings.html"><i class="fas fa-cog me-2"></i> Settings</a>
-        <hr>
+        <hr class="mx-3 opacity-25">
         <a href="login.html" class="text-warning"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
     </div>
 
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold">Student Registry</h2>
-            <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#studentModal">
-                <i class="fas fa-plus me-2"></i> Register New Student
+            <h2 class="fw-bold">Student Registry Hub</h2>
+            <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#advancedRegisterModal">
+                <i class="fas fa-plus me-2"></i> New Enrollment
             </button>
         </div>
 
-        <div class="card student-table shadow-sm border-0">
+        <div class="card registry-card shadow-sm border-0">
             <div class="p-3 bg-white border-bottom d-flex justify-content-between">
-                <input type="text" id="searchBar" class="form-control w-25" placeholder="Search by name..." onkeyup="searchStudents()">
-                <select id="gradeFilter" class="form-select w-25" onchange="searchStudents()">
+                <input type="text" id="searchBar" class="form-control w-25" placeholder="Search by name or ID..." onkeyup="searchRegistry()">
+                <select id="gradeFilter" class="form-select w-25" onchange="searchRegistry()">
                     <option value="">All Grades</option>
-                    <option value="Grade 9">Grade 9</option>
-                    <option value="Grade 10">Grade 10</option>
-                    <option value="Grade 11">Grade 11</option>
-                    <option value="Grade 12">Grade 12</option>
+                    <option>Grade 9</option>```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registry | FEMA SMS</title>
+    <link href="[https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css](https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css)" rel="stylesheet">
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css)">
+    <style>
+        body { background: #f0f2f5; font-family: 'Segoe UI', system-ui, sans-serif; }
+        .sidebar { height: 100vh; width: 250px; position: fixed; background: #004aad; color: white; padding-top: 20px; z-index: 1000; }
+        .main-content { margin-left: 250px; padding: 30px; }
+        .sidebar a { color: rgba(255,255,255,0.85); text-decoration: none; display: block; padding: 15px 25px; transition: 0.2s; border-radius: 8px; margin: 0 10px; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(255,255,255,0.1); color: white; }
+        .sidebar a.active { background: white; color: #004aad; font-weight: bold; }
+        
+        .registry-card { background: white; border-radius: 16px; border: none; overflow: hidden; }
+        .table-avatar { width: 38px; height: 38px; object-fit: cover; border-radius: 50%; border: 2px solid #e0e0e0; margin-right: 12px; }
+        .profile-headshot { width: 110px; height: 110px; object-fit: cover; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .profile-img-sm { width: 70px; height: 70px; object-fit: cover; border-radius: 50%; border: 2px solid #e0e0e0; }
+        .modal-xl { max-width: 1100px; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar shadow">
+        <h4 class="text-center fw-bold mb-4">FEMA SMS</h4>
+        <a href="dashboard.html"><i class="fas fa-home me-2"></i> Dashboard</a>
+        <a href="students.html" class="active"><i class="fas fa-user-graduate me-2"></i> Students</a>
+        <a href="teachers.html"><i class="fas fa-chalkboard-teacher me-2"></i> Teachers</a>
+        <a href="attendance.html"><i class="fas fa-chart-line me-2"></i> Attendance</a>
+        <a href="finance.html"><i class="fas fa-wallet me-2"></i> Finance</a>
+        <a href="settings.html"><i class="fas fa-cog me-2"></i> Settings</a>
+        <hr class="mx-3 opacity-25">
+        <a href="login.html" class="text-warning"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
+    </div>
+
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">Student Registry Hub</h2>
+            <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#advancedRegisterModal">
+                <i class="fas fa-plus me-2"></i> New Enrollment
+            </button>
+        </div>
+
+        <div class="card registry-card shadow-sm border-0">
+            <div class="p-3 bg-white border-bottom d-flex justify-content-between">
+                <input type="text" id="searchBar" class="form-control w-25" placeholder="Search by name or ID..." onkeyup="searchRegistry()">
+                <select id="gradeFilter" class="form-select w-25" onchange="searchRegistry()">
+                    <option value="">All Grades</option>
+                    <option>Grade 9</option>
+                    <option>Grade 10</option>
+                    <option>Grade 11</option>
+                    <option>Grade 12</option>
                 </select>
             </div>
             <table class="table table-hover mb-0 valign-middle">
                 <thead class="table-light">
                     <tr>
-                        <th>ID</th>
+                        <th>System ID</th>
                         <th>Student Name</th>
                         <th>Grade Stream</th>
-                        <th>Parent / Guardian</th>
+                        <th>Guardian Details</th>
+                        <th>Vitals</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="studentTableBody">
+                <tbody id="registryTableBody">
                     </tbody>
             </table>
         </div>
     </div>
 
-    <div class="modal fade" id="studentModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-content p-4">
+    <div class="modal fade" id="advancedRegisterModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-content p-4">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold">Register Student & Parent</h5>
+                <h5 class="modal-title fw-bold text-primary"><i class="fas fa-id-card me-2"></i>New Enrollment File</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form id="studentForm">
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Student Photo</label>
-                        <input type="file" id="studPhoto" class="form-control" accept="image/*">
+                <form id="advancedStudentForm">
+                    <div class="row mb-4">
+                        <div class="col-md-3 text-center">
+                            <label class="form-label fw-semibold">Student Photo</label>
+                            <input type="file" id="studPhoto" class="form-control" accept="image/*" required>
+                        </div>
+                        <div class="col-md-9 row">
+                            <div class="col-md-7 mb-3">
+                                <label class="form-label fw-semibold">Student Full Name</label>
+                                <input type="text" id="studName" class="form-control" required placeholder="e.g. Almaz Ayana">
+                            </div>
+                            <div class="col-md-5 mb-3">
+                                <label class="form-label fw-semibold">Grade</label>
+                                <select id="studGrade" class="form-select">
+                                    <option>Grade 9</option>
+                                    <option>Grade 10</option>
+                                    <option>Grade 11</option>
+                                    <option>Grade 12</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Fayda ID (Ethiopia)</label>
+                                <input type="text" id="faydaId" class="form-control" required placeholder="NID012345678">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Section</label>
+                                <input type="text" id="studSec" class="form-control" required placeholder="e.g. A">
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Student Full Name</label>
-                        <input type="text" id="studName" class="form-control" required placeholder="e.g. Tariku Abebe">
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col">
-                            <label class="form-label fw-semibold">Grade</label>
-                            <select id="studGrade" class="form-select">
-                                <option>Grade 9</option>
-                                <option>Grade 10</option>
-                                <option>Grade 11</option>
-                                <option>Grade 12</option>
+
+                    <div class="row g-3 p-3 bg-light rounded-3 mb-4">
+                        <h6 class="fw-bold text-secondary mb-1"><i class="fas fa-medkit me-2"></i>Medical & Vitals File</h6>
+                        <div class="col-md-3">
+                            <label class="small fw-semibold">Blood Type</label>
+                            <select id="bloodType" class="form-select form-select-sm">
+                                <option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
                             </select>
                         </div>
-                        <div class="col">
-                            <label class="form-label fw-semibold">Section</label>
-                            <input type="text" id="studSec" class="form-control" required placeholder="e.g. A">
+                        <div class="col-md-3">
+                            <label class="small fw-semibold">Height (cm)</label>
+                            <input type="number" id="heightCm" class="form-control form-control-sm" placeholder="155">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="small fw-semibold">Special Need</label>
+                            <select id="specialNeed" class="form-select form-select-sm">
+                                <option value="No">None Declared</option>
+                                <option value="Yes">Special Attention Req.</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="small fw-semibold">Emergency Number</label>
+                            <input type="text" id="emergePhone" class="form-control form-control-sm" required placeholder="+251 911 000 000">
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <label class="small fw-semibold">Medical History / Attentions</label>
+                            <textarea id="medicalHistory" class="form-control form-control-sm" rows="2" placeholder="Declare allergies, disabilities, or chronic conditions..."></textarea>
                         </div>
                     </div>
-                    <div class="p-3 bg-light rounded-3 mb-3">
-                        <h6 class="fw-bold text-secondary mb-2"><i class="fas fa-user-shield me-2"></i>Parent / Guardian Details</h6>
-                        <div class="mb-2">
-                            <label class="small fw-semibold">Parent Name</label>
-                            <input type="text" id="parentName" class="form-control form-control-sm" required placeholder="e.g. Abebe Kebede">
+
+                    <div class="row mb-3 align-items-center">
+                        <div class="col-md-3 text-center">
+                            <label class="form-label fw-semibold">Guardian Photo</label>
+                            <input type="file" id="parentPhoto" class="form-control" accept="image/*" required>
                         </div>
-                        <div>
-                            <label class="small fw-semibold">Contact Phone Number</label>
-                            <input type="text" id="parentPhone" class="form-control form-control-sm" required placeholder="e.g. +251 911...">
+                        <div class="col-md-9 row">
+                            <h6 class="fw-bold text-dark mt-3"><i class="fas fa-user-shield me-2"></i>Guardian Identification</h6>
+                            <div class="col-md-6 mb-3">
+                                <label class="small fw-semibold">Guardian Name</label>
+                                <input type="text" id="parentName" class="form-control" required placeholder="e.g. Abebe Kebede">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="small fw-semibold">Contact Phone Number</label>
+                                <input type="text" id="parentPhone" class="form-control" required placeholder="+251 911...">
+                            </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100 fw-bold">Save Complete Profile</button>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">Commit Enrollment File</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-content p-4">
+    <div class="modal fade" id="deepProfileModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-content p-4">
             <div class="modal-header border-0">
-                <h5 class="modal-title fw-bold text-primary">Student Information File</h5>
+                <h5 class="modal-title fw-bold text-primary">Consolidated Student Information File</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body" id="profileModalBody">
+            <div class="modal-body" id="deepProfileModalBody">
                 </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="[https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js](https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js)"></script>
     <script>
         // Critical Authentication Route Guard Layer
-        if (localStorage.getItem('fema_auth_session') !== 'authenticated_true_token') {
-            window.location.href = "login.html";
-        }
+        if (localStorage.getItem('fema_auth_session') !== 'authenticated_true_token') { window.location.href = "login.html"; }
 
-        const fallbackAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23004aad'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
+        const fallbackStudAvatar = "data:image/svg+xml;utf8,<svg xmlns='[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)' viewBox='0 0 24 24' fill='%23004aad'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
+        
+        let students = JSON.parse(localStorage.getItem('fema_students')) || [];
 
-        const defaultStudents = [
-            { id: "REG/2026/001", name: "Kidus Yohannes", grade: "Grade 10", section: "A", parent: "Yohannes Alemu", phone: "+251 911 445 566", status: "Active", photo: fallbackAvatar },
-            { id: "REG/2026/002", name: "Helen Tadesse", grade: "Grade 12", section: "C", parent: "Tadesse Bekele", phone: "+251 910 223 344", status: "Active", photo: fallbackAvatar }
-        ];
-
-        let students = JSON.parse(localStorage.getItem('fema_students')) || defaultStudents;
-
-        function renderTable() {
-            const tbody = document.getElementById('studentTableBody');
+        function renderRegistry() {
+            const tbody = document.getElementById('registryTableBody');
             tbody.innerHTML = '';
-            students.forEach((student, index) => {
+            students.forEach((s, idx) => {
+                let vitalBadge = s.vitals.specialNeed === "Yes" ? 'bg-danger' : 'bg-secondary';
                 tbody.innerHTML += `
                     <tr>
-                        <td><code>${student.id}</code></td>
+                        <td><code>${s.id}</code></td>
+                        <td><img src="${s.photo || fallbackStudAvatar}" class="table-avatar shadow-sm"><a href="#" class="fw-bold text-decoration-none" onclick="viewDeepProfile(${idx})">${s.name}</a></td>
+                        <td>${s.grade} (${s.section})</td>
+                        <td><strong>${s.parent}</strong><br><small class="text-muted">${s.phone}</small></td>
+                        <td><span class="badge ${vitalBadge} me-1">${s.vitals.bloodType}</span> <small>${s.vitals.heightCm} cm</small></td>
+                        <td><span class="badge bg-success">${s.status}</span></td>
                         <td>
-                            <img src="${student.photo || fallbackAvatar}" class="table-avatar shadow-sm">
-                            <a href="#" class="fw-bold text-decoration-none" onclick="viewFullProfile(${index})">${student.name}</a>
-                        </td>
-                        <td>${student.grade} - Section ${student.section}</td>
-                        <td><strong>${student.parent}</strong><br><small class="text-muted">${student.phone}</small></td>
-                        <td><span class="badge bg-success">${student.status}</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary me-1" onclick="viewFullProfile(${index})"><i class="fas fa-eye"></i> View</button>
-                            <button class="btn btn-sm btn-outline-danger border-0" onclick="deleteStudent(${index})"><i class="fas fa-trash"></i></button>
+                            <button class="btn btn-sm btn-outline-primary" onclick="viewDeepProfile(${idx})"><i class="fas fa-file-invoice"></i></button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteStudentRecord(${idx})"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
@@ -166,102 +256,79 @@
             localStorage.setItem('fema_students', JSON.stringify(students));
         }
 
-        // Process File Input To Base64 Image Async String Data
-        document.getElementById('studentForm').addEventListener('submit', function(e) {
+        document.getElementById('advancedStudentForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const photoFile = document.getElementById('studPhoto').files[0];
+            const studFile = document.getElementById('studPhoto').files[0];
+            const parentFile = document.getElementById('parentPhoto').files[0];
             
-            if (photoFile) {
-                const reader = new FileReader();
-                reader.onloadend = function() {
-                    saveStudentData(reader.result);
+            const reader = new FileReader();
+            reader.readAsDataURL(studFile);
+            reader.onload = function(eventStud) {
+                const readerP = new FileReader();
+                readerP.readAsDataURL(parentFile);
+                readerP.onload = function(eventParent) {
+                    commitEnrollment(eventStud.result, eventParent.result);
                 }
-                reader.readAsDataURL(photoFile);
-            } else {
-                saveStudentData(fallbackAvatar);
             }
         });
 
-        function saveStudentData(photoBase64) {
-            const newStudent = {
-                id: `REG/2026/0${students.length + 1}`,
+        function commitEnrollment(studPhotoBase64, parentPhotoBase64) {
+            const newFile = {
+                id: `REG/2026/0${students.length + 4}`, // Maintaining sequential prototyping IDs
                 name: document.getElementById('studName').value,
+                fayda: document.getElementById('faydaId').value,
                 grade: document.getElementById('studGrade').value,
                 section: document.getElementById('studSec').value,
                 parent: document.getElementById('parentName').value,
                 phone: document.getElementById('parentPhone').value,
+                photo: studPhotoBase64,
+                parentPhoto: parentPhotoBase64,
                 status: "Active",
-                photo: photoBase64
+                vitals: {
+                    bloodType: document.getElementById('bloodType').value,
+                    heightCm: document.getElementById('heightCm').value,
+                    specialNeed: document.getElementById('specialNeed').value,
+                    emergency: document.getElementById('emergePhone').value,
+                    history: document.getElementById('medicalHistory').value
+                }
             };
-            students.push(newStudent);
-            renderTable();
-            
-            bootstrap.Modal.getInstance(document.getElementById('studentModal')).hide();
-            document.getElementById('studentForm').reset();
+            students.push(newFile);
+            renderRegistry();
+            bootstrap.Modal.getInstance(document.getElementById('advancedRegisterModal')).hide();
+            document.getElementById('advancedStudentForm').reset();
         }
 
-        function viewFullProfile(idx) {
-            const student = students[idx];
-            const modalBody = document.getElementById('profileModalBody');
+        function viewDeepProfile(idx) {
+            const s = students[idx];
+            const modalBody = document.getElementById('deepProfileModalBody');
             
             modalBody.innerHTML = `
-                <div class="row align-items-center mb-4 bg-light p-3 rounded-4">
-                    <div class="col-md-3 text-center">
-                        <img src="${student.photo}" class="profile-img-circle shadow">
-                    </div>
+                <div class="row align-items-center mb-4 bg-primary text-white p-4 rounded-4 shadow">
+                    <div class="col-md-3 text-center"><img src="${s.photo}" class="profile-headshot shadow-lg"></div>
                     <div class="col-md-9">
-                        <h3 class="fw-bold text-dark mb-1">${student.name}</h3>
-                        <p class="text-primary fw-bold mb-2">ID: ${student.id} | <span class="badge bg-success">${student.status}</span></p>
-                        <div class="row text-secondary">
-                            <div class="col-6"><strong>Current Roster:</strong> ${student.grade} (${student.section})</div>
-                            <div class="col-6"><strong>Parent/Guardian:</strong> ${student.parent}</div>
-                        </div>
+                        <h2 class="fw-bold mb-1">${s.name}</h2>
+                        <p class="mb-2 fw-semibold opacity-75">FEMA SMS System ID: ${s.id} | Fayda ID: ${s.fayda}</p>
+                        <span class="badge bg-white text-primary fw-bold px-3 py-2">${s.grade} - Section ${s.section}</span>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card p-3 border-0 bg-light rounded-4 h-100">
-                            <h6 class="fw-bold text-primary mb-2"><i class="fas fa-history me-2"></i>Attendance Log History</h6>
-                            <ul class="list-unstyled mb-0">
-                                <li class="mb-1"><i class="fas fa-check-circle text-success me-2"></i>Mon, May 11 - Present</li>
-                                <li class="mb-1"><i class="fas fa-check-circle text-success me-2"></i>Tue, May 12 - Present</li>
-                                <li class="mb-1"><i class="fas fa-times-circle text-danger me-2"></i>Wed, May 13 - Absent (SMS Alert Dispatched)</li>
-                            </ul>
-                        </div>
+                <div class="row g-4">
+                    <div class="col-md-6 row g-3">
+                        <div class="col-12"><div class="card p-3 border-0 bg-light rounded-4 h-100"><h6 class="fw-bold text-secondary mb-2"><i class="fas fa-notes-medical me-2"></i>Medical Attention Required</h6><p class="mb-0 text-dark p-2 bg-white rounded-2">${s.vitals.history || "No medical history declared at enrollment."}</p></div></div>
+                        <div class="col-12"><div class="card p-3 border-0 bg-light rounded-4 h-100"><h6 class="fw-bold text-success mb-2"><i class="fas fa-file-contract me-2"></i>Academic Log History Summary</h6><ul class="list-unstyled mb-0 small"><li class="mb-1"><i class="fas fa-award text-success me-2"></i>Passed Grade 9 Mock Exams (2025 E.C.)</li><li><i class="fas fa-check text-muted me-2"></i>Promoted from Primary Wing (REG/2024/602)</li></ul></div></div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="card p-3 border-0 bg-light rounded-4 h-100">
-                            <h6 class="fw-bold text-success mb-2"><i class="fas fa-money-check-alt me-2"></i>Tuition & Finance History</h6>
-                            <p class="mb-1"><strong>Term 1 Fees:</strong> 4,500 ETB <span class="badge bg-success">Paid</span></p>
-                            <p class="mb-0 text-muted small">Reference: <code>FT2525746PN1</code> (Verified via Telebirr)</p>
-                        </div>
+                    <div class="col-md-3">
+                        <div class="card p-3 border-0 bg-danger text-white rounded-4 h-100 shadow-sm"><h6 class="fw-bold mb-3"><i class="fas fa-heartbeat me-2"></i>Emergency Vitals</h6>
+                        <small>Blood Type:</small><h5 class="fw-bold">${s.vitals.bloodType}</h5><small>Height:</small><h5 class="fw-bold">${s.vitals.heightCm} cm</h5><small>Emergency Phone:</small><h5 class="fw-bold">${s.vitals.emergency}</h5></div>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="card p-3 border-0 bg-white rounded-4 h-100 shadow-sm"><img src="${s.parentPhoto}" class="profile-img-sm shadow mb-3 mx-auto"><h6 class="fw-bold text-secondary mb-0">Registered Guardian</h6><p class="mb-1 fw-bold text-dark fs-5">${s.parent}</p><p class="text-muted mb-0 small">${s.phone}</p></div>
                     </div>
                 </div>
             `;
-            
-            new bootstrap.Modal(document.getElementById('profileModal')).show();
+            new bootstrap.Modal(document.getElementById('deepProfileModal')).show();
         }
 
-        function deleteStudent(index) {
-            if(confirm("Are you sure you want to completely erase this student record file?")) {
-                students.splice(index, 1);
-                renderTable();
-            }
-        }
-
-        function searchStudents() {
-            let filterName = document.getElementById('searchBar').value.toLowerCase();
-            let filterGrade = document.getElementById('gradeFilter').value;
-            let rows = document.getElementById('studentTableBody').getElementsByTagName('tr');
-            
-            students.forEach((student, index) => {
-                let matchName = student.name.toLowerCase().includes(filterName);
-                let matchGrade = filterGrade === "" || student.grade === filterGrade;
-                rows[index].style.display = (matchName && matchGrade) ? "" : "none";
-            });
-        }
-
-        renderTable();
+        renderRegistry();
     </script>
 </body>
 </html>
