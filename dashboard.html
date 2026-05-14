@@ -80,6 +80,11 @@
     </div>
 
     <script>
+        // --- CRITICAL AUTHENTICATION ROUTE GUARD LAYER ---
+if (localStorage.getItem('fema_auth_session') !== 'authenticated_true_token') {
+    // Drop execution immediately and kick user back out to security checkpoint
+    window.location.href = "login.html";
+}
         function runDashboardEngine() {
             // Load Shared Application Databases
             let studentDB = JSON.parse(localStorage.getItem('fema_students')) || [];
