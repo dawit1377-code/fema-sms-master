@@ -146,39 +146,43 @@
             localStorage.setItem('fema_teachers', JSON.stringify(teachers));
         }
 
-        document.getElementById('teacherForm').addEventListener('submit', function(e) {
+        function convertFileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                if (!file) resolve(null);
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        document.getElementById('teacherForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const teachPhotoFile = document.getElementById('teachPhoto').files[0];
             
-            if(!teachPhotoFile) {
-                commitTeachProfile(fallbackTeacherAvatar);
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.readAsDataURL(teachPhotoFile);
-            reader.onload = function(event) {
-                commitTeachProfile(event.result);
+            try {
+                const photoBase64 = await convertFileToBase64(teachPhotoFile);
+                
+                const newFile = {
+                    id: document.getElementById('teachSystemId').value,
+                    name: document.getElementById('teachName').value,
+                    subject: document.getElementById('teachSubject').value,
+                    classes: document.getElementById('teachClasses').value,
+                    phone: document.getElementById('teachPhone').value,
+                    status: "Active",
+                    photo: photoBase64 || fallbackTeacherAvatar
+                };
+                
+                teachers.push(newFile);
+                renderTeachers();
+                
+                let modalEl = document.getElementById('teacherModal');
+                bootstrap.Modal.getInstance(modalEl).hide();
+                document.getElementById('teacherForm').reset();
+            } catch (err) {
+                alert("Error handling teacher image upload: " + err.message);
             }
         });
-
-        function commitTeachProfile(photoBase64) {
-            const newFile = {
-                id: document.getElementById('teachSystemId').value,
-                name: document.getElementById('teachName').value,
-                subject: document.getElementById('teachSubject').value,
-                classes: document.getElementById('teachClasses').value,
-                phone: document.getElementById('teachPhone').value,
-                status: "Active",
-                photo: photoBase64
-            };
-            teachers.push(newFile);
-            renderTeachers();
-            
-            let modalEl = document.getElementById('teacherModal');
-            bootstrap.Modal.getInstance(modalEl).hide();
-            document.getElementById('teacherForm').reset();
-        }
 
         function viewDeepTeach(idx) {
             const t = teachers[idx];
@@ -189,7 +193,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row align-items-center mb-4 bg-light p-3 rounded-4 border">
-                        <div class="col-md-3 text-center"><img src="${t.photo}" class="teach-profile-img shadow mb-2"></div>
+                        <div class="col-md-3 text-center"><img src="${t.photo || fallbackTeacherAvatar}" class="teach-profile-img shadow mb-2"></div>
                         <div class="col-md-9 row align-items-center">
                             <div class="col-md-9">
                                 <h3 class="fw-bold text-dark mb-1">${t.name}</h3>
