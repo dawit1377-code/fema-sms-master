@@ -115,10 +115,10 @@
                 
                 btn.innerHTML = `<i class="fas fa-check-double me-2"></i> Alerts Sent Successfully`;
                 btn.className = "btn btn-success fw-bold shadow";
-            }, 1800);
+            }, 1500);
         }
 
-        // Render line graph visualization charts using native system parameters
+        // Render visual trends graph
         const ctx = document.getElementById('attendanceChart').getContext('2d');
         new Chart(ctx, {
             type: 'line',
@@ -135,7 +135,8 @@
             options: { responsive: true, plugins: { legend: { display: false } } }
         });
 
-        renderAttendance();
+        // Fire initialization sequence on DOM content load
+        document.addEventListener("DOMContentLoaded", renderAttendance);
     </script>
 </body>
 </html>
