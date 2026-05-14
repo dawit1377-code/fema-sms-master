@@ -76,6 +76,11 @@
     </div>
 
     <script>
+        // --- CRITICAL AUTHENTICATION ROUTE GUARD LAYER ---
+if (localStorage.getItem('fema_auth_session') !== 'authenticated_true_token') {
+    // Drop execution immediately and kick user back out to security checkpoint
+    window.location.href = "login.html";
+}
         const mockAbsentees = [
             { name: "Kidus Yohannes", grade: "10-A", contact: "+251 911 445 566", status: "Pending" },
             { name: "Helen Tadesse", grade: "12-C", contact: "+251 910 223 344", status: "Pending" }
