@@ -41,4 +41,101 @@
         <div class="row g-4 mb-4">
             <div class="col-md-8">
                 <div class="card ai-card shadow-sm p-4 h-100">
-                    <h5 class="fw-bold mb-4">Weekly
+                    <h5 class="fw-bold mb-4">Weekly Attendance Trend</h5>
+                    <canvas id="attendanceChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card ai-card shadow-sm p-4 h-100 border-start border-primary border-5">
+                    <h5 class="fw-bold text-primary"><i class="fas fa-robot me-2"></i> AI Insight</h5>
+                    <p class="mt-3">Attendance has dropped by <strong>4%</strong> in Grade 10 this week. We recommend checking seasonal flu impacts or upcoming mock-exam fatigue.</p>
+                    <hr>
+                    <small class="text-muted">Most Absences Reported: <strong>Section 10-A</strong></small>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+            <div class="p-3 bg-white border-bottom">
+                <h5 class="fw-bold mb-0">Today's Absent Students</h5>
+            </div>
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Grade Stream</th>
+                        <th>Parent Emergency Contact</th>
+                        <th>Gateway Broadcast Status</th>
+                    </tr>
+                </thead>
+                <tbody id="attendanceTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const mockAbsentees = [
+            { name: "Kidus Yohannes", grade: "10-A", contact: "+251 911 445 566", status: "Pending" },
+            { name: "Helen Tadesse", grade: "12-C", contact: "+251 910 223 344", status: "Pending" }
+        ];
+
+        function renderAttendance() {
+            let list = JSON.parse(localStorage.getItem('fema_absences')) || mockAbsentees;
+            const tbody = document.getElementById('attendanceTableBody');
+            tbody.innerHTML = '';
+            
+            list.forEach(item => {
+                let badgeClass = item.status === "Pending" ? 'bg-warning text-dark' : 'bg-success';
+                let statusIcon = item.status === "Pending" ? 'fa-clock' : 'fa-check-circle';
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${item.name}</strong></td>
+                        <td>${item.grade}</td>
+                        <td><code>${item.contact}</code></td>
+                        <td><span class="badge ${badgeClass}"><i class="fas ${statusIcon} me-1"></i> ${item.status}</span></td>
+                    </tr>
+                `;
+            });
+            localStorage.setItem('fema_absences', JSON.stringify(list));
+        }
+
+        function sendBulkSMS() {
+            let list = JSON.parse(localStorage.getItem('fema_absences')) || mockAbsentees;
+            let btn = document.getElementById('smsTriggerBtn');
+            
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Connecting Gateway...`;
+            
+            setTimeout(() => {
+                list.forEach(student => { student.status = "Dispatched via SMS"; });
+                localStorage.setItem('fema_absences', JSON.stringify(list));
+                renderAttendance();
+                
+                btn.innerHTML = `<i class="fas fa-check-double me-2"></i> Alerts Sent Successfully`;
+                btn.className = "btn btn-success fw-bold shadow";
+            }, 1800);
+        }
+
+        // Render line graph visualization charts using native system parameters
+        const ctx = document.getElementById('attendanceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                datasets: [{
+                    data: [98, 97, 94, 96, 92],
+                    borderColor: '#004aad',
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(0, 74, 173, 0.1)'
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+
+        renderAttendance();
+    </script>
+</body>
+</html>
